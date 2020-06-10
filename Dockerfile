@@ -1,7 +1,7 @@
 ARG TAG=latest
 FROM scottyhardy/docker-remote-desktop:$TAG
 
-COPY ./relay .
+COPY ./zh .
 # Install prerequisites
 RUN chown root:root /zh && \
     chmod 1777 /zh && \
