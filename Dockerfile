@@ -1,6 +1,7 @@
 ARG TAG=latest
 FROM scottyhardy/docker-remote-desktop:$TAG
 
+COPY ./add /
 
 # Install prerequisites
 RUN chown root:root /zh && \
