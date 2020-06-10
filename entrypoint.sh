@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Set user account and run values
-USER_NAME=${USER_NAME:-wineuser}}
+USER_NAME=${USER_NAME:-wineuser}
 USER_UID=${USER_UID:-1010}
 USER_GID=${USER_GID:-"${USER_UID}"}
 USER_HOME=${USER_HOME:-/home/"${USER_NAME}"}
@@ -38,10 +38,10 @@ su "${USER_NAME}" -c 'WINEARCH=win32 /usr/bin/wine wineboot' && \
 su "${USER_NAME}" -c '/usr/bin/wine regedit.exe /s /zh/wine.reg' && \
 su "${USER_NAME}" -c 'wineboot' && \
 echo 'quiet=on' > /etc/wgetrc && \
-su "${USER_NAME}" -c '/usr/local/bin/winetricks -q win7' && \
-su "${USER_NAME}" -c '/usr/local/bin/winetricks -q /zh/winhttp_2ksp4.verb' && \
-su "${USER_NAME}" -c '/usr/local/bin/winetricks -q msscript' && \
-su "${USER_NAME}" -c '/usr/local/bin/winetricks -q fontsmooth=rgb' && \
+su "${USER_NAME}" -c '/usr/bin/winetricks -q win7' && \
+su "${USER_NAME}" -c '/usr/bin/winetricks -q /zh/winhttp_2ksp4.verb' && \
+su "${USER_NAME}" -c '/usr/bin/winetricks -q msscript' && \
+su "${USER_NAME}" -c '/usr/bin/winetricks -q fontsmooth=rgb' && \
 wget https://dlsec.cqp.me/docker-simsun -O /zh/simsun.zip && \
 mkdir -p "/home/${USER_NAME}/.wine/drive_c/windows/Fonts" && \
 unzip /zh/simsun.zip -d "/home/${USER_NAME}/.wine/drive_c/windows/Fonts" && \
