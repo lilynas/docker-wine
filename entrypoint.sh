@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Set user account and run values
-USER_NAME=${USER_NAME:-wineuser}
+USER_NAME=${USER_NAME:-wineuser}}
 USER_UID=${USER_UID:-1010}
 USER_GID=${USER_GID:-"${USER_UID}"}
 USER_HOME=${USER_HOME:-/home/"${USER_NAME}"}
@@ -9,7 +9,7 @@ USER_PASSWD=${USER_PASSWD:-"$(openssl passwd -1 -salt "$(openssl rand -base64 6)
 RDP_SERVER=${RDP_SERVER:-no}
 RUN_AS_ROOT=${RUN_AS_ROOT:-no}
 FORCED_OWNERSHIP=${FORCED_OWNERSHIP:-no}
-TZ=${TZ:-UTC}
+TZ=${TZ:-Asia/Shanghai}
 
 # Create the user account
 ! grep -q ":${USER_GID}:$" /etc/group && groupadd --gid "${USER_GID}" "${USER_NAME}"
@@ -32,6 +32,24 @@ fi
 
 # Configure timezone
 ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime && echo "${TZ}" > /etc/timezone
+
+# Configure Wine
+su "${USER_NAME}" -c 'WINEARCH=win32 /usr/bin/wine wineboot' && \
+su "${USER_NAME}" -c '/usr/bin/wine regedit.exe /s /zh/wine.reg' && \
+su "${USER_NAME}" -c 'wineboot' && \
+echo 'quiet=on' > /etc/wgetrc && \
+su "${USER_NAME}" -c '/usr/local/bin/winetricks -q win7' && \
+su "${USER_NAME}" -c '/usr/local/bin/winetricks -q /zh/winhttp_2ksp4.verb' && \
+su "${USER_NAME}" -c '/usr/local/bin/winetricks -q msscript' && \
+su "${USER_NAME}" -c '/usr/local/bin/winetricks -q fontsmooth=rgb' && \
+wget https://dlsec.cqp.me/docker-simsun -O /zh/simsun.zip && \
+mkdir -p "/home/${USER_NAME}/.wine/drive_c/windows/Fonts" && \
+unzip /zh/simsun.zip -d "/home/${USER_NAME}/.wine/drive_c/windows/Fonts" && \
+mkdir -p "/home/${USER_NAME}/.fonts/" && \
+ln -s "/home/${USER_NAME}/.wine/drive_c/windows/Fonts/simsun.ttc" "/home/${USER_NAME}/.fonts/" && \
+chown -R "${USER_NAME}":"${USER_NAME}" "/home/${USER_NAME}" && \
+su "${USER_NAME}" -c 'fc-cache -v' && \
+rm -rf "/home/${USER_NAME}/.cache/winetricks" /tmp/* /etc/wgetrc
 
 # Run in X11 redirection mode (default) or with xvfb
 if echo "${RDP_SERVER}" | grep -q -i -E "^(no|off|false|0)$"; then
